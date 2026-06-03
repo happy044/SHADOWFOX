@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #020617;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: block;
+  min-width: 320px;
+  min-height: 100vh;
+  position: relative;
+  background-color: #020617;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--background-image-industrial-pattern);
+  background-repeat: repeat;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: -1;
+}
+
+#root {
+  width: 100%;
+}
+
+@theme {
+  --color-industrial-50: #f8fafc;
+  --color-industrial-100: #f1f5f9;
+  --color-industrial-200: #e2e8f0;
+  --color-industrial-300: #cbd5e1;
+  --color-industrial-400: #94a3b8;
+  --color-industrial-500: #64748b;
+  --color-industrial-600: #475569;
+  --color-industrial-700: #334155;
+  --color-industrial-800: #1e293b;
+  --color-industrial-900: #0f172a;
+  --color-industrial-950: #020617;
+
+  --color-accent-blue: #3b82f6;
+  --color-accent-cyan: #06b6d4;
+  --color-accent-indigo: #6366f1;
+
+  --background-image-industrial-pattern: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+}
+
+.bg-industrial-gradient {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.card-glass {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

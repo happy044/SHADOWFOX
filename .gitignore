@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+dist/
+build/
+.DS_Store
+*.log
+debug_approvals.js
+cleanup_sample_data.js
+check_db.js
+list_tables.js
+debug_db.js
+migrate_photo.js
+seed_pos.js
