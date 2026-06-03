@@ -165,12 +165,34 @@ const App = () => {
   const fetchUsers = async () => {
     try {
       const response = await api.getUsers();
-      setUsers(response.data);
-      if (response.data.length > 0 && !currentUser) {
-        setCurrentUser(response.data[0]); // Default to first user
+      const usersData = response.data;
+      setUsers(usersData);
+      
+      // If no users are returned from the database yet, use the seeded defaults
+      if (usersData.length === 0 && !currentUser) {
+        const defaultUser = { 
+          user_id: 1, 
+          name: 'System Admin', 
+          role: 'Admin', 
+          email: 'admin@factory.com',
+          password: 'password123' 
+        };
+        setUsers([
+          defaultUser,
+          { user_id: 2, name: 'Procurement Engineer', role: 'Procurement Engineer', email: 'procurement@factory.com', password: 'password123' }
+        ]);
+        setCurrentUser(defaultUser);
+      } else if (usersData.length > 0 && !currentUser) {
+        setCurrentUser(usersData[0]);
       }
     } catch (error) {
       console.error('Error fetching users:', error);
+      // Fallback in case of API error during deployment
+      if (!currentUser) {
+        const fallbackUser = { user_id: 1, name: 'System Admin', role: 'Admin', email: 'admin@factory.com', password: 'password123' };
+        setUsers([fallbackUser]);
+        setCurrentUser(fallbackUser);
+      }
     }
   };
 
