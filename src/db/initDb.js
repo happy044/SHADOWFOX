@@ -1,21 +1,13 @@
-import mysql from 'mysql2/promise';
+import pool from '../config/db.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function initDb() {
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    multipleStatements: true
-  });
+  const client = await pool.connect();
 
   try {
     const schemaPath = path.join(__dirname, 'schema.sql');
@@ -25,13 +17,14 @@ async function initDb() {
     // Split schema into individual statements
     const statements = schema.split(';').filter(s => s.trim().length > 0);
     for (const statement of statements) {
-      await connection.query(statement);
+      await client.query(statement);
     }
     console.log('Database initialized successfully.');
   } catch (error) {
     console.error('Error initializing database:', error.message);
   } finally {
-    await connection.end();
+    client.release();
+    await pool.end();
   }
 }
 

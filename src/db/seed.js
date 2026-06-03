@@ -1,22 +1,14 @@
-import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import pool from '../config/db.js';
 
 async function seedDb() {
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-  });
+  const client = await pool.connect();
 
   try {
     console.log('Seeding database...');
     
     // Seed Plants and Departments
-    await connection.query('INSERT INTO Plants (name, location) VALUES ("Main Plant", "North Zone"), ("Secondary Plant", "South Zone")');
-    await connection.query('INSERT INTO Departments (name) VALUES ("Procurement"), ("Manufacturing"), ("Operations")');
+    await client.query('INSERT INTO Plants (name, location) VALUES (\'Main Plant\', \'North Zone\'), (\'Secondary Plant\', \'South Zone\')');
+    await client.query('INSERT INTO Departments (name) VALUES (\'Procurement\'), (\'Manufacturing\'), (\'Operations\')');
 
     const users = [
       ['Eng. John Procurement', 'Procurement Engineer', 'procurement@factory.com', 'password123', 1, 1, null],
@@ -28,16 +20,19 @@ async function seedDb() {
       ['System Admin', 'Admin', 'admin@factory.com', 'password123', 1, 1, null]
     ];
 
-    await connection.query(
-      'INSERT IGNORE INTO Users (name, role, email, password, dept_id, plant_id, profile_photo) VALUES ?',
-      [users]
-    );
+    for (const user of users) {
+      await client.query(
+        'INSERT INTO Users (name, role, email, password, dept_id, plant_id, profile_photo) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (email) DO NOTHING',
+        user
+      );
+    }
 
     console.log('Seeding completed successfully.');
   } catch (error) {
     console.error('Error seeding database:', error.message);
   } finally {
-    await connection.end();
+    client.release();
+    await pool.end();
   }
 }
 
