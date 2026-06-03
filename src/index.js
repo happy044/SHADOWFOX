@@ -17,6 +17,11 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Routes
 app.use('/api', apiRoutes);
 
+// Root route
+app.get('/', (req, res) => {
+  res.send('<h1>Digital Project API</h1><p>The server is running successfully. Please use the <a href="https://digital-project-frontend.onrender.com">Frontend Application</a> to access the system.</p>');
+});
+
 // Basic health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'PO Signing System API is running' });
@@ -25,8 +30,8 @@ app.get('/health', (req, res) => {
 // Test DB connection
 app.get('/db-test', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT 1 + 1 AS result');
-    res.json({ status: 'OK', message: 'Database connection successful', result: rows[0].result });
+    const result = await pool.query('SELECT 1 + 1 AS result');
+    res.json({ status: 'OK', message: 'Database connection successful', result: result.rows[0].result });
   } catch (error) {
     res.status(500).json({ status: 'Error', message: 'Database connection failed', error: error.message });
   }
